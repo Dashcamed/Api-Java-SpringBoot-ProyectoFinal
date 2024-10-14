@@ -27,7 +27,6 @@ public class Producto {
     private int stock;
     private String categoria;
 
-    // se genera el constructor
     public Producto(Long id, String nombre, Double precio, int stock, String categoria, Panaderia panaderia) {
         this.id = id;
         this.nombre = nombre;
@@ -36,8 +35,7 @@ public class Producto {
         this.categoria = categoria;
         this.panaderia = panaderia;
     }
-
-    // se genera la relacion en este caso muchos productos pertenecen a una panaderia y el join para unir a la panaderia
+    
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "panaderia_id")
     @JsonBackReference

@@ -23,7 +23,6 @@ public class Cliente {
     private String fechaDeModificacion;
     private int edad;
 
-    // Cambia a Set de ClientePanaderia
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
 

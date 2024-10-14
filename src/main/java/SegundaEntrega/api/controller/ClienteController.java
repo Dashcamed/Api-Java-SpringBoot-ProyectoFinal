@@ -46,10 +46,8 @@ public class ClienteController {
         cliente.setTelefono(clienteDTO.getTelefono());
         cliente.setEdad(clienteDTO.getEdad());
 
-        // Agregar la panadería al cliente
         cliente.addPanaderia(panaderiaOpt.get());
 
-        // Guardar el cliente
         this.clienteService.saveClient(cliente);
 
         return ResponseEntity.ok().body(new ApiResponse("Cliente creado con éxito", cliente));

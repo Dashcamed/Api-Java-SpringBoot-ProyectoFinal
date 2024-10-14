@@ -7,5 +7,5 @@ import SegundaEntrega.api.model.Cliente;
 
 @Repository
 public interface ClienteRepository extends JpaRepository <Cliente,Long> {
-    
+
 }

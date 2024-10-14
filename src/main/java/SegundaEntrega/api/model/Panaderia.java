@@ -26,9 +26,6 @@ public class Panaderia {
     @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Producto> productos;
 
-    // Cambia a Set de ClientePanaderia
     @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
-
-    // Otros métodos...
 }

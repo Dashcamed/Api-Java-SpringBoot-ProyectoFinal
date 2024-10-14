@@ -18,15 +18,15 @@ public class PanaderiaService {
     public List<Panaderia> getAllPanaderias(){
         return panaderiaRepository.findAll();
     }
-    // trae una panaderia por id
+
     public Optional<Panaderia> getPanaderiaById(Long id){
         return panaderiaRepository.findById(id);
     }
-    // guarda una panaderia o sucursal
+
     public Panaderia savePanaderia(Panaderia panaderia){
         return panaderiaRepository.save(panaderia);
     }
-    // borra una panaderia con validacion
+
     public void deletePanaderia(Long id){
         if (panaderiaRepository.existsById(id)){
             panaderiaRepository.deleteById(id);

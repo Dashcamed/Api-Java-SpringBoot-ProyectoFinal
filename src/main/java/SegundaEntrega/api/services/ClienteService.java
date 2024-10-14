@@ -19,20 +19,17 @@ public class ClienteService {
     private ClienteRepository clienteRepository;
 
     public List<Cliente> getAllClients() {
-        return clienteRepository.findAll(); // Cambiado a findAll para obtener todos los clientes
+        return clienteRepository.findAll();
     }
 
-    // buscar cliente por id
     public Optional<Cliente> getClientById(Long id) {
         return clienteRepository.findById(id);
     }
 
-    // guardar clientes
     public Cliente saveClient(Cliente cliente) {
         return clienteRepository.save(cliente);
     }
 
-    //borrar cliente con validacion
     public void deleteClient(Long id) {
         if(clienteRepository.existsById(id)){
             clienteRepository.deleteById(id);
@@ -50,21 +47,17 @@ public class ClienteService {
     if (optionalClient.isPresent()) {
         Cliente existingClient = optionalClient.get();
 
-        // Actualizar los campos con los datos del DTO
         existingClient.setNombre(clienteDTO.getNombre());
         existingClient.setCorreo(clienteDTO.getCorreo());
         existingClient.setTelefono(clienteDTO.getTelefono());
         existingClient.setEdad(clienteDTO.getEdad());
         existingClient.setFechaDeModificacion(FechaService.getFechaActual());
 
-        // Limpiar las panaderías existentes antes de actualizar
         existingClient.getClientePanaderias().clear();
 
-        // Buscar la panadería por ID si es necesario actualizar
         if (clienteDTO.getPanaderiaId() != null) {
             Optional<Panaderia> optionalPanaderia = panaderiaRepository.findById(clienteDTO.getPanaderiaId());
             if (optionalPanaderia.isPresent()) {
-                // Crear una nueva instancia de ClientePanaderia y agregarla
                 ClientePanaderia clientePanaderia = new ClientePanaderia(existingClient, optionalPanaderia.get());
                 existingClient.getClientePanaderias().add(clientePanaderia);
             } else {
@@ -72,7 +65,6 @@ public class ClienteService {
             }
         }
 
-        // Guardar el cliente actualizado
         return clienteRepository.save(existingClient);
         } else {
         throw new RuntimeException("Cliente no encontrado con ID: " + id);

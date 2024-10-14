@@ -29,20 +29,17 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    // Obtener todos los productos
     @GetMapping
     public List<Producto> getAllProductos() {
         return productoService.getAllProductos();
     }
 
-    // Obtener un producto por ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductoById(@PathVariable Long id) {
         Optional<Producto> productoOpt = productoService.getProductoById(id);
-        return productoOpt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok().body(new ApiResponse("Producto: ", productoOpt));
     }
 
-    // Crear un nuevo producto
     @PostMapping("/createProduct")
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         this.productoService.saveProducto(producto);
@@ -58,29 +55,24 @@ public class ProductoController {
         if (existingProductoOpt.isPresent()) {
             Producto existingProducto = existingProductoOpt.get();
 
-            // Asignamos los valores del DTO al producto existente
             existingProducto.setNombre(productoDTO.getNombre());
             existingProducto.setPrecio(productoDTO.getPrecio());
             existingProducto.setStock(productoDTO.getStock());
             existingProducto.setCategoria(productoDTO.getCategoria());
 
-            // Buscar la panadería por ID y asignarla al producto
             Optional<Panaderia> panaderiaOpt = panaderiaService.getPanaderiaById(productoDTO.getPanaderiaId());
             if (panaderiaOpt.isPresent()) {
                 existingProducto.setPanaderia(panaderiaOpt.get());
             } else {
-                return ResponseEntity.badRequest().build(); // Error si la panadería no existe
+                return ResponseEntity.badRequest().build();
             }
-
-            // Guardamos el producto actualizado
             Producto updatedProducto = productoService.saveProducto(existingProducto);
             return ResponseEntity.ok(updatedProducto);
         } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
 
-    // Eliminar un producto
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteProducto(@PathVariable Long id) {
         try {
@@ -91,14 +83,13 @@ public class ProductoController {
         }
     }
 
-    // Modificar el stock de un producto
     @PatchMapping("/{id}/stock")
     public ResponseEntity<Void> updateStock(@PathVariable Long id, @RequestParam int nuevoStock) {
         try {
             productoService.updateStockProducto(id, nuevoStock);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build(); // 404 Not Found
+            return ResponseEntity.notFound().build();
         }
     }
 }
