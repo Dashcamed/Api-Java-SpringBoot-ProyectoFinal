@@ -1,16 +1,10 @@
 package SegundaEntrega.api.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import SegundaEntrega.api.services.FechaService;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,7 +13,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Cliente {
 
-    //se generan las columnas con el generation type
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -30,28 +23,16 @@ public class Cliente {
     private String fechaDeModificacion;
     private int edad;
 
-    // se genera el constructor
+    // Cambia a Set de ClientePanaderia
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
 
-    public Cliente(Long id, String nombre, String correo, String telefono, int edad, Panaderia panaderia) {
-        this.id = id;
-        this.nombre = nombre;
-        this.correo = correo;
-        this.telefono = telefono;
-        this.edad = edad;
+    public void addPanaderia(Panaderia panaderia) {
+        ClientePanaderia clientePanaderia = new ClientePanaderia(this, panaderia);
+        this.clientePanaderias.add(clientePanaderia);
     }
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-        name = "cliente_panaderia",
-        joinColumns = @JoinColumn(name = "cliente_id"),
-        inverseJoinColumns = @JoinColumn(name = "panaderia_id")
-    )
-    private Set<Panaderia> panaderias;
-
-    public void setPanaderias(Panaderia panaderia) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setPanaderias'");
+    public void setClientePanaderias(Set<ClientePanaderia> clientePanaderias) {
+        this.clientePanaderias = clientePanaderias;
     }
-
-
 }

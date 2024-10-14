@@ -1,6 +1,7 @@
 package SegundaEntrega.api.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,22 +28,30 @@ public class PanaderiaController {
     @GetMapping
     public ResponseEntity<?> getAllPanaderias(){
         List<Panaderia> panaderias = panaderiaService.getAllPanaderias();
-        return ResponseEntity.ok().body(new ApiResponse(null, panaderias));
+        return ResponseEntity.ok().body(new ApiResponse("Lista de panaderias", panaderias));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getPanaderiaById(@PathVariable("id") Long id){
+        Optional<Panaderia> panaderia = panaderiaService.getPanaderiaById(id);
+        return ResponseEntity.ok().body(new ApiResponse("Esta es la panaderia", panaderia));
     }
 
     @PostMapping("/createPanaderia")
     public ResponseEntity<?> createPanaderia(@RequestBody Panaderia panaderia){
-        this.panaderiaService.savePanaderia(null);
+        this.panaderiaService.savePanaderia(panaderia);
         return ResponseEntity.ok().body(new ApiResponse("Panaderia Creada", panaderia));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public void deleteClient(@PathVariable("id") Panaderia panaderia){
-        try {
-            this.panaderiaService.deletePanaderia(null);
-        } catch (Exception e) {
-        }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteClient(@PathVariable("id") Long id) {
+    try {
+        panaderiaService.deletePanaderia(id);
+        return ResponseEntity.ok().body(new ApiResponse("Panadería eliminada", null));
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar la panadería", null));
     }
+}
 
     @PutMapping("/{id}")
     public ResponseEntity<Panaderia> updatePanaderia(@PathVariable Long id, @RequestBody PanaderiaDTO panaderiaDTO) {

@@ -1,5 +1,8 @@
 package SegundaEntrega.api.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -35,8 +38,9 @@ public class Producto {
     }
 
     // se genera la relacion en este caso muchos productos pertenecen a una panaderia y el join para unir a la panaderia
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "panaderia_id")
+    @JsonBackReference
     private Panaderia panaderia;
 
 }

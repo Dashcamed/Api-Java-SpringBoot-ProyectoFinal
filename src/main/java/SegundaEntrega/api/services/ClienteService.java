@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import SegundaEntrega.api.DTO.ClienteDTO;
 import SegundaEntrega.api.model.Cliente;
+import SegundaEntrega.api.model.ClientePanaderia;
 import SegundaEntrega.api.model.Panaderia;
 import SegundaEntrega.api.repository.ClienteRepository;
 import SegundaEntrega.api.repository.PanaderiaRepository;
@@ -44,32 +45,37 @@ public class ClienteService {
     private PanaderiaRepository panaderiaRepository;
 
     public Cliente updateClient(Long id, ClienteDTO clienteDTO) {
-        Optional<Cliente> optionalClient = clienteRepository.findById(id);
+    Optional<Cliente> optionalClient = clienteRepository.findById(id);
 
-        if (optionalClient.isPresent()) {
-            Cliente existingClient = optionalClient.get();
+    if (optionalClient.isPresent()) {
+        Cliente existingClient = optionalClient.get();
 
-            // Actualizar los campos con los datos del DTO
-            existingClient.setNombre(clienteDTO.getNombre());
-            existingClient.setCorreo(clienteDTO.getCorreo());
-            existingClient.setTelefono(clienteDTO.getTelefono());
-            existingClient.setEdad(clienteDTO.getEdad());
-            existingClient.setFechaDeModificacion(FechaService.getFechaActual());
+        // Actualizar los campos con los datos del DTO
+        existingClient.setNombre(clienteDTO.getNombre());
+        existingClient.setCorreo(clienteDTO.getCorreo());
+        existingClient.setTelefono(clienteDTO.getTelefono());
+        existingClient.setEdad(clienteDTO.getEdad());
+        existingClient.setFechaDeModificacion(FechaService.getFechaActual());
 
-            // Buscar la panadería por ID si es necesario actualizar
-            if (clienteDTO.getPanaderiaId() != null) {
-                Optional<Panaderia> optionalPanaderia = panaderiaRepository.findById(clienteDTO.getPanaderiaId());
-                if (optionalPanaderia.isPresent()) {
-                    existingClient.setPanaderias(optionalPanaderia.get());
-                } else {
-                    throw new RuntimeException("Panadería no encontrada con ID: " + clienteDTO.getPanaderiaId());
-                }
+        // Limpiar las panaderías existentes antes de actualizar
+        existingClient.getClientePanaderias().clear();
+
+        // Buscar la panadería por ID si es necesario actualizar
+        if (clienteDTO.getPanaderiaId() != null) {
+            Optional<Panaderia> optionalPanaderia = panaderiaRepository.findById(clienteDTO.getPanaderiaId());
+            if (optionalPanaderia.isPresent()) {
+                // Crear una nueva instancia de ClientePanaderia y agregarla
+                ClientePanaderia clientePanaderia = new ClientePanaderia(existingClient, optionalPanaderia.get());
+                existingClient.getClientePanaderias().add(clientePanaderia);
+            } else {
+                throw new RuntimeException("Panadería no encontrada con ID: " + clienteDTO.getPanaderiaId());
             }
+        }
 
-            // Guardar el cliente actualizado
-            return clienteRepository.save(existingClient);
+        // Guardar el cliente actualizado
+        return clienteRepository.save(existingClient);
         } else {
-            throw new RuntimeException("Cliente no encontrado con ID: " + id);
+        throw new RuntimeException("Cliente no encontrado con ID: " + id);
         }
     }
 }

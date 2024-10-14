@@ -43,7 +43,7 @@ public class ProductoController {
     }
 
     // Crear un nuevo producto
-    @PostMapping
+    @PostMapping("/createProduct")
     public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
         this.productoService.saveProducto(producto);
         return ResponseEntity.ok().body(new ApiResponse("Producto Creado", producto));
@@ -82,12 +82,12 @@ public class ProductoController {
 
     // Eliminar un producto
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProducto(@PathVariable Long id) {
-        if (productoService.getProductoById(id).isPresent()) {
+    public ResponseEntity<?> deleteProducto(@PathVariable Long id) {
+        try {
             productoService.deleteProducto(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } else {
-            return ResponseEntity.notFound().build(); // 404 Not Found
+            return ResponseEntity.ok().body(new ApiResponse("Producto Eliminado", null));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar el Producto", null));
         }
     }
 
