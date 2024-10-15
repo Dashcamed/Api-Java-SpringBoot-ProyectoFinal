@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Producto {
-    //se generan las columnas con el generation type
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 

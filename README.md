@@ -1,4 +1,4 @@
-# API REST PARA PANADERIAS
+# API REST PARA PANADERIAS CON SPRINGBOOT-JAVA 🌿☕
 
 **ESTE MODELO AUN ESTA EN DESARROLLO PERO YA SE PUEDEN PROBAR LOS METODOS MÁS COMUNES DE UNA API CON DATA RELACIONAL.**
 
@@ -7,6 +7,9 @@
 
 > [!NOTE]
 > PROBADO EN POSTMAN
+
+> [!IMPORTANT]
+> LOS OBJETOS DEBEN MANDARSE A POSTMAN COMO SE DESCRIBE EN EL README. De lo contrario va a causar malas relaciones en la base de datos y los datos podrian no eliminarse.
 
 ## Clase Panaderia
 
@@ -80,7 +83,7 @@
 * **URL** : `/api/productos/createProduct`
 * **Descripción** : Crea un nuevo producto con la información proporcionada en el cuerpo de la solicitud. Retorna un mensaje de éxito y el producto creado.
 * **Cuerpo de la solicitud:**
-* `{ "nombre": "Pan Integral", "precio": 150.0, "stock": 50, "categoria": "panes", "panaderiaId": 1 }`
+* `{ "nombre": "Pan Integral", "precio": 3.50, "stock": 100, "categoria": "Panadería", "panaderia": { "id": 1 } }`
 
 ### Actualizar un producto por ID
 
@@ -117,15 +120,29 @@
 * **Método:** `POST`
 * **Endpoint:** `/api/clientes/createClient`
 * **Cuerpo de la Solicitud (JSON):**
-* `{ "nombre": "Nombre del Cliente", "correo": "correo@ejemplo.com", "telefono": "123456789", "edad": 30, "panaderiaId": 1 }`
+* **Cliente sin asociar:**
+* `{ "nombre": "Camilo Medina", "correo": "camilo.medina@example.com", "telefono": "123456789", "edad": 25 }`
+* **Cliente asociado a una o mas panaderias:**
+* `{ "nombre": "Camilo Medina", "correo": "camilo.medina@example.com", "telefono": "123456789", "edad": 25, "clientePanaderias": [ { "panaderia": { "id": 1 } }, { "panaderia": { "id": 2 } } ] } `
 
 ### Actualizar un cliente
 
 * **Método:** `PUT`
 * **Endpoint:** `/api/clientes/{id}`
-* **Cuerpo de la Solicitud (JSON):**
-* `{ "nombre": "Nuevo Nombre", "correo": "nuevo_correo@ejemplo.com", "telefono": "987654321", "edad": 35, "panaderiaId": 2 }`
-* **Descripción:** Actualiza la información de un cliente existente. Cambia `{id}` por el ID del cliente que deseas actualizar.
+* **Cuerpos de la Solicitud (JSON):**
+* **Put a cliente sencillo:**
+* `{ "id": 1, "nombre": "Camilo Medina", "correo": "nuevo.email@example.com", "telefono": "987654321", "edad": 26 }`
+* **Put a cliente actualizando panaderias:**
+* `{ "id": 1, "nombre": "Camilo Medina", "correo": "nuevo.email@example.com", "telefono": "987654321", "edad": 26, "clientePanaderias": [ { "id": 1,   "panaderia": { "id": 2 } }, { "id": 2, "panaderia": { "id": 3 } } ] } `
+* **Detalles del JSON**
+* id: Es necesario especificar el id del cliente para que el servidor sepa a qué cliente se refiere la actualización.
+* clientePanaderias: Esta es la lista de asociaciones actualizadas del cliente con las panaderías. Aquí se pueden modificar las panaderías existentes o agregar nuevas relaciones.
+
+  * Cada objeto dentro de `clientePanaderias` debe tener su propio `id` (el `id` de la relación existente en la tabla de unión `ClientePanaderia`), lo cual es necesario para identificar qué relación modificar.
+  * El `id` de la `panaderia` indica a qué panadería se está asociando el cliente.
+* **Consideraciones:**
+* **Actualización de las relaciones** : Si no envías el campo `clientePanaderias`, no se actualizarán las relaciones con las panaderías. Si lo incluyes, las relaciones existentes podrían ser reemplazadas por las nuevas que envíes en el JSON.
+* **Relaciones en cascada** : Dado que tienes `cascade = CascadeType.ALL` en las relaciones de `ClientePanaderia`, cualquier cambio que envíes en las asociaciones de panaderías se aplicará en cascada.
 
 ### Eliminar un cliente
 

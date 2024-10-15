@@ -23,7 +23,7 @@ public class Cliente {
     private String fechaDeModificacion;
     private int edad;
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
 
     public void addPanaderia(Panaderia panaderia) {

@@ -23,9 +23,9 @@ public class Panaderia {
     private String telefono;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Producto> productos;
 
-    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
 }
