@@ -1,6 +1,6 @@
 package SegundaEntrega.api.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+// import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -34,10 +34,13 @@ public class Producto {
         this.categoria = categoria;
         this.panaderia = panaderia;
     }
-    
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "panaderia_id")
-    @JsonBackReference
+    // @JsonBackReference
     private Panaderia panaderia;
+
+    public void setPanaderiaId(Long panaderiaId) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPanaderiaId'");
+    }
 
 }
