@@ -8,19 +8,18 @@ import SegundaEntrega.api.model.Producto;
 @Component
 public class ProductoMapper {
 
-    public ProductoDTO toDTO(Producto producto){
-        if(producto == null){
-            throw new IllegalArgumentException("la entidad no puede ser nula");
+    public ProductoDTO toDTOProducto(Producto producto) {
+        if (producto == null) {
+            throw new IllegalArgumentException("La entidad no puede ser nula");
         }
-        ProductoDTO productoDTO = new ProductoDTO();
-        productoDTO.setNombre(productoDTO.getNombre());
-        productoDTO.setPrecio(productoDTO.getPrecio());
-        productoDTO.setStock(productoDTO.getStock());
-        productoDTO.setCategoria(productoDTO.getCategoria());
-        productoDTO.setPanaderiaId(productoDTO.getPanaderiaId());
 
-        return productoDTO;
-
+        return ProductoDTO.builder()
+                .nombre(producto.getNombre())
+                .precio(producto.getPrecio())
+                .stock(producto.getStock())
+                .categoria(producto.getCategoria())
+                .panaderiaId(producto.getPanaderia() != null ? producto.getPanaderia().getId() : null)
+                .build();
     }
 
     public Producto toEntity(ProductoDTO productoDTO) {

@@ -27,7 +27,7 @@ public class PanaderiaController {
 
     @GetMapping
     public ResponseEntity<?> getAllPanaderias(){
-        List<Panaderia> panaderias = panaderiaService.getAllPanaderias();
+        List<Panaderia> panaderias = panaderiaService.getAllPanaderias(null);
         return ResponseEntity.ok().body(new ApiResponse("Lista de panaderias", panaderias));
     }
 

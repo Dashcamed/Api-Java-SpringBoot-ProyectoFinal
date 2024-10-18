@@ -1,7 +1,5 @@
 package SegundaEntrega.api.model;
 
-// import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,7 +34,7 @@ public class Producto {
     }
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "panaderia_id")
-    // @JsonBackReference
+
     private Panaderia panaderia;
 
     public void setPanaderiaId(Long panaderiaId) {

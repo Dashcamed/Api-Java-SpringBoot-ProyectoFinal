@@ -3,21 +3,28 @@ package SegundaEntrega.api.DTO;
 import java.util.Set;
 
 import SegundaEntrega.api.model.ClientePanaderia;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ClienteDTO {
     private String nombre;
     private String correo;
     private String telefono;
     private int edad;
     private Long panaderiaId;
-    public void setClientePanaderias(Set<ClientePanaderia> clientePanaderias) {
-        throw new UnsupportedOperationException("Unimplemented method 'setClientePanaderias'");
+    private Set<ClientePanaderia> clientePanaderias;
+
+    public ClienteDTO() {
     }
-    public Set<ClientePanaderia> getClientePanaderias() {
-        throw new UnsupportedOperationException("Unimplemented method 'getClientePanaderias'");
+
+    public ClienteDTO(String nombre, String correo, String telefono, int edad, Long panaderiaId, Set<ClientePanaderia> clientePanaderias) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.telefono = telefono;
+        this.edad = edad;
+        this.panaderiaId = panaderiaId;
+        this.clientePanaderias = clientePanaderias;
     }
 }

@@ -2,7 +2,6 @@ package SegundaEntrega.api.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import SegundaEntrega.api.services.FechaService;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,5 +32,9 @@ public class Cliente {
 
     public void setClientePanaderias(Set<ClientePanaderia> clientePanaderias) {
         this.clientePanaderias = clientePanaderias;
+    }
+
+    public Object getPanaderia() {
+        throw new UnsupportedOperationException("Unimplemented method 'getPanaderia'");
     }
 }

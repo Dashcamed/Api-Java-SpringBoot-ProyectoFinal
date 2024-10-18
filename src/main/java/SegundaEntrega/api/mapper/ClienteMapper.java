@@ -7,18 +7,20 @@ import SegundaEntrega.api.model.Cliente;
 
 @Component
 public class ClienteMapper {
-    public ClienteDTO toDTO(Cliente cliente){
-        if (cliente == null){
-            throw new IllegalArgumentException("la entidad no puede ser nula");
 
+    public ClienteDTO toDTOCliente(Cliente cliente) {
+        if (cliente == null) {
+            throw new IllegalArgumentException("La entidad no puede ser nula");
         }
-        ClienteDTO clienteDTO = new ClienteDTO();
-        clienteDTO.setNombre(cliente.getNombre());
-        clienteDTO.setCorreo(cliente.getCorreo());
-        clienteDTO.setTelefono(cliente.getTelefono());
-        clienteDTO.setEdad(cliente.getEdad());
-        clienteDTO.setClientePanaderias(cliente.getClientePanaderias());
-        return clienteDTO;
+
+        return ClienteDTO.builder()
+                .nombre(cliente.getNombre())
+                .correo(cliente.getCorreo())
+                .telefono(cliente.getTelefono())
+                .edad(cliente.getEdad())
+                .panaderiaId(cliente.getPanaderia() != null ? ((Cliente) cliente.getPanaderia()).getId() : null)
+                .clientePanaderias(cliente.getClientePanaderias())
+                .build();
     }
 
     public Cliente toEntity(ClienteDTO clienteDTO) {

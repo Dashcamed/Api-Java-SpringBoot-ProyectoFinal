@@ -1,28 +1,27 @@
 package SegundaEntrega.api.mapper;
 
 import org.springframework.stereotype.Component;
-
 import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.model.Panaderia;
 
 @Component
 public class PanaderiaMapper {
 
-    public PanaderiaDTO toDTO(Panaderia panaderia){
-        if (panaderia == null){
-            throw new IllegalArgumentException("la entidad no puede ser nula");
-
+    public PanaderiaDTO toDTOPanaderia(Panaderia panaderia) {
+        if (panaderia == null) {
+            throw new IllegalArgumentException("La entidad no puede ser nula");
         }
-        PanaderiaDTO panaderiaDTO = new PanaderiaDTO();
-        panaderiaDTO.setNombre(panaderia.getNombre());
-        panaderiaDTO.setDireccion(panaderia.getDireccion());
-        panaderiaDTO.setTelefono(panaderia.getTelefono());
-        return panaderiaDTO;
+
+        return PanaderiaDTO.builder()
+                .nombre(panaderia.getNombre())
+                .direccion(panaderia.getDireccion())
+                .telefono(panaderia.getTelefono())
+                .build();
     }
 
     public Panaderia toEntity(PanaderiaDTO panaderiaDTO) {
         if (panaderiaDTO == null) {
-            throw new IllegalArgumentException("La panaderiaDTO no puede ser nulo");
+            throw new IllegalArgumentException("La panaderiaDTO no puede ser nula");
         }
 
         Panaderia panaderia = new Panaderia();
@@ -32,3 +31,4 @@ public class PanaderiaMapper {
         return panaderia;
     }
 }
+
