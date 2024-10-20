@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.DTO.ProductoDTO;
-import SegundaEntrega.api.model.Panaderia;
-import SegundaEntrega.api.model.Producto;
 import SegundaEntrega.api.services.PanaderiaService;
 import SegundaEntrega.api.services.ProductoService;
 import utils.ApiResponse;
@@ -29,44 +29,52 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    @GetMapping
-    public List<Producto> getAllProductos() {
-        return productoService.getAllProductos();
+    @GetMapping(path = "/all")
+    public ResponseEntity<?> getAllProductos() {
+        try {
+            List<ProductoDTO> productos = productoService.getAllProductos();
+            return ResponseEntity.ok().body(new ApiResponse("Lista de productos", productos));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("NO HAY PRODUCTOS", e.getMessage()));
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getProductoById(@PathVariable Long id) {
-        Optional<Producto> productoOpt = productoService.getProductoById(id);
-        return ResponseEntity.ok().body(new ApiResponse("Producto: ", productoOpt));
+    public ResponseEntity<?> getProductoById(@PathVariable("id") Long id){
+        try {
+            Optional<ProductoDTO> producto = productoService.getProductoById(id);
+            return ResponseEntity.ok(producto);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Producto no encontrado", e.getMessage()));
+        }
     }
 
     @PostMapping("/createProduct")
-    public ResponseEntity<?> createProducto(@RequestBody Producto producto) {
-        this.productoService.saveProducto(producto);
-        return ResponseEntity.ok().body(new ApiResponse("Producto Creado", producto));
+    public ResponseEntity<ProductoDTO> createProduct(@RequestBody ProductoDTO productoDTO){
+        ProductoDTO createdProduct = productoService.saveProducto(productoDTO);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     @Autowired
     private PanaderiaService panaderiaService;
-    // Actualizar un producto (puedes modificarlo según sea necesario)
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
-        Optional<Producto> existingProductoOpt = productoService.getProductoById(id);
+    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
+        Optional<ProductoDTO> existingProductoOpt = Optional.empty();
         if (existingProductoOpt.isPresent()) {
-            Producto existingProducto = existingProductoOpt.get();
+            ProductoDTO existingProducto = existingProductoOpt.get();
 
             existingProducto.setNombre(productoDTO.getNombre());
             existingProducto.setPrecio(productoDTO.getPrecio());
             existingProducto.setStock(productoDTO.getStock());
             existingProducto.setCategoria(productoDTO.getCategoria());
 
-            Optional<Panaderia> panaderiaOpt = panaderiaService.getPanaderiaById(productoDTO.getPanaderiaId());
+            Optional<PanaderiaDTO> panaderiaOpt = panaderiaService.getPanaderiaById(productoDTO.getPanaderiaId());
             if (panaderiaOpt.isPresent()) {
-                existingProducto.setPanaderia(panaderiaOpt.get());
+                existingProducto.setPanaderiaId(panaderiaOpt.get());
             } else {
                 return ResponseEntity.badRequest().build();
             }
-            Producto updatedProducto = productoService.saveProducto(existingProducto);
+            ProductoDTO updatedProducto = productoService.saveProducto(existingProducto);
             return ResponseEntity.ok(updatedProducto);
         } else {
             return ResponseEntity.notFound().build();

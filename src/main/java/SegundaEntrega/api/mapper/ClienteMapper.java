@@ -14,11 +14,10 @@ public class ClienteMapper {
         }
 
         return ClienteDTO.builder()
-                .nombre(cliente.getNombre())
-                .correo(cliente.getCorreo())
-                .telefono(cliente.getTelefono())
-                .edad(cliente.getEdad())
-                .panaderiaId(cliente.getPanaderia() != null ? ((Cliente) cliente.getPanaderia()).getId() : null)
+                .name(cliente.getName())
+                .email(cliente.getEmail())
+                .phone(cliente.getPhone())
+                .panaderiaId(cliente.getClientePanaderias().stream().findFirst().map(cp -> cp.getPanaderia().getId()).orElse(null))
                 .clientePanaderias(cliente.getClientePanaderias())
                 .build();
     }
@@ -29,10 +28,9 @@ public class ClienteMapper {
         }
 
         Cliente cliente = new Cliente();
-        cliente.setNombre(clienteDTO.getNombre());
-        cliente.setCorreo(clienteDTO.getCorreo());
-        cliente.setTelefono(clienteDTO.getTelefono());
-        cliente.setEdad(clienteDTO.getEdad());
+        cliente.setName(clienteDTO.getName());
+        cliente.setEmail(clienteDTO.getEmail());
+        cliente.setPhone(clienteDTO.getPhone());
         cliente.setClientePanaderias(clienteDTO.getClientePanaderias());
         return cliente;
     }

@@ -9,22 +9,25 @@ import lombok.Data;
 @Data
 @Builder
 public class ClienteDTO {
-    private String nombre;
-    private String correo;
-    private String telefono;
-    private int edad;
+
+    private String name;
+    private String email;
+    private String phone;
     private Long panaderiaId;
     private Set<ClientePanaderia> clientePanaderias;
 
     public ClienteDTO() {
     }
 
-    public ClienteDTO(String nombre, String correo, String telefono, int edad, Long panaderiaId, Set<ClientePanaderia> clientePanaderias) {
-        this.nombre = nombre;
-        this.correo = correo;
-        this.telefono = telefono;
-        this.edad = edad;
+    public ClienteDTO(String name, String email, String phone, Long panaderiaId, Set<ClientePanaderia> clientePanaderias) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
         this.panaderiaId = panaderiaId;
         this.clientePanaderias = clientePanaderias;
+    }
+
+    public void addPanaderia(PanaderiaDTO panaderiaDTO) {
+        throw new UnsupportedOperationException("Unimplemented method 'addPanaderia'");
     }
 }

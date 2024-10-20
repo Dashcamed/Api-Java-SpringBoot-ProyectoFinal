@@ -23,7 +23,7 @@ public class PanaderiaService {
         this.panaderiaRepository = panaderiaRepository;
     }
 
-    public List<PanaderiaDTO> getAllPanaderias(PanaderiaDTO panaderiaDTO){
+    public List<PanaderiaDTO> getAllPanaderias(){
         return panaderiaRepository.findAll().stream()
                 .map(panaderiaMapper::toDTOPanaderia)
                 .collect(Collectors.toList());

@@ -24,4 +24,8 @@ public class ProductoDTO {
         this.panaderiaId = panaderiaId;
     }
 
+    public void setPanaderiaId(PanaderiaDTO panaderiaDTO) {
+        throw new UnsupportedOperationException("Unimplemented method 'setPanaderiaId'");
+    }
+
 }
