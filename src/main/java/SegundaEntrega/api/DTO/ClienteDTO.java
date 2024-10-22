@@ -1,14 +1,37 @@
 package SegundaEntrega.api.DTO;
 
+import java.util.Set;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
+@Builder
 public class ClienteDTO {
-    private String nombre;
-    private String correo;
-    private String telefono;
-    private int edad;
-    private Long panaderiaId;
+    @Schema(description = "Unique identifier of the user", example = "1")
+    private Long id;
+    @Schema(description = "Name of the user", example = "John Doe")
+    private String name;
+    @Schema(description = "Email address of the user", example = "john.doe@example.com")
+    private String email;
+    @Schema(description = "Phone number of the user", example = "1234567890")
+    private String phone;
+
+    @Schema(description = "List of panaderias with the user")
+    private Set<Long> panaderiasIds;
+
+
+    public ClienteDTO() {
+    }
+
+    public ClienteDTO(Long id, String name, String email, String phone, Set<Long> panaderiasIds) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.panaderiasIds = panaderiasIds;
+    }
+    // Constructors, getters, and setters
+
 }

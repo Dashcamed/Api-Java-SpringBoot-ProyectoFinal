@@ -1,77 +1,83 @@
 package SegundaEntrega.api.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import SegundaEntrega.api.DTO.ClienteDTO;
-import SegundaEntrega.api.model.Cliente;
-import SegundaEntrega.api.model.Panaderia;
-import SegundaEntrega.api.repository.PanaderiaRepository;
-import SegundaEntrega.api.services.ClienteService;
+import SegundaEntrega.api.mapper.ClienteMapper;
+import SegundaEntrega.api.services.ClienteServiceRest;
 import utils.ApiResponse;
+
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/clientes")
 public class ClienteController {
-    @Autowired
-    private ClienteService clienteService;
 
-    @GetMapping
-    public ResponseEntity<?> getAllClients() {
-        List<Cliente> clientes = clienteService.getAllClients();
-        return ResponseEntity.ok().body(new ApiResponse("Clientes:", clientes));
+    private final ClienteServiceRest clienteService;
+
+    @Autowired
+    public ClienteController(ClienteServiceRest clienteService) {
+        this.clienteService = clienteService;
+    }
+    @Autowired
+    public ClienteMapper clienteMapper;
+    // Importar cliente desde la API externa
+    @PostMapping("/import/{id}")
+    public ResponseEntity<ClienteDTO> importClienteFromApi(@PathVariable Long id) {
+        try {
+            ClienteDTO clienteDTO = clienteService.saveClientFromApi(id);
+            return new ResponseEntity<>(clienteDTO, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
-
-    @Autowired
-    private PanaderiaRepository panaderiaRepository;
-
+    // Crear un nuevo cliente a partir de un DTO
     @PostMapping("/createClient")
     public ResponseEntity<?> addClient(@RequestBody ClienteDTO clienteDTO) {
-    Optional<Panaderia> panaderiaOpt = panaderiaRepository.findById(clienteDTO.getPanaderiaId());
-    if (panaderiaOpt.isPresent()) {
-        Cliente cliente = new Cliente();
-        cliente.setNombre(clienteDTO.getNombre());
-        cliente.setCorreo(clienteDTO.getCorreo());
-        cliente.setTelefono(clienteDTO.getTelefono());
-        cliente.setEdad(clienteDTO.getEdad());
+        clienteService.saveClientFromDTO(clienteDTO);
+        return ResponseEntity.ok().body(new ApiResponse("Cliente Creado", clienteDTO));
+    }
 
-        cliente.addPanaderia(panaderiaOpt.get());
-
-        this.clienteService.saveClient(cliente);
-
-        return ResponseEntity.ok().body(new ApiResponse("Cliente creado con éxito", cliente));
-        } else {
-        return ResponseEntity.badRequest().body(new ApiResponse("Error: Panadería no encontrada", null));
+    // Obtener todos los clientes
+    @GetMapping(path = "/all")
+    public ResponseEntity<?> getAllClientes() {
+        try {
+            List<ClienteDTO> clientes = clienteService.getAllClients();
+            return ResponseEntity.ok().body(new ApiResponse("Lista de Clientes", clientes));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("NO HAY CLIENTES", e.getMessage()));
+        }
+    }
+    // obtener un cliente por id
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getClientById(@PathVariable Long id){
+        try {
+            clienteService.getClientById(id);
+            return ResponseEntity.ok().body(new ApiResponse("Cliente:", id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error usuario no encontrado" + e.getMessage());
         }
     }
 
-
+    // Eliminar cliente por ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse> deleteClient(@PathVariable Long id) {
-    Optional<Cliente> clienteOpt = clienteService.getClientById(id);
-    if (clienteOpt.isPresent()) {
-        clienteService.deleteClient(id);
-        return ResponseEntity.ok(new ApiResponse("Cliente eliminado con éxito", null));
-        } else {
-        return ResponseEntity.badRequest().body(new ApiResponse("Error: Cliente no encontrado", null));
+    public ResponseEntity<?> deleteClient(@PathVariable Long id) {
+        try {
+            clienteService.deleteClient(id);
+            return ResponseEntity.ok().body(new ApiResponse("Cliente Eliminado", id));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar el cliente", e.getMessage()));
         }
     }
 
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Cliente> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO) {
-        Cliente updatedClient = clienteService.updateClient(id, clienteDTO);
-        return ResponseEntity.ok(updatedClient);
-    }
 }

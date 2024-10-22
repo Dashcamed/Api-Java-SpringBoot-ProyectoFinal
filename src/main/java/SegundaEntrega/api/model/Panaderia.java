@@ -1,18 +1,22 @@
 package SegundaEntrega.api.model;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
+@Builder
 public class Panaderia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +26,51 @@ public class Panaderia {
     private String direccion;
     private String telefono;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<Producto> productos;
+    @ManyToMany(mappedBy = "panaderias")
+    private Set<Cliente> clientes = new HashSet<>();
 
-    @OneToMany(mappedBy = "panaderia", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "panaderia_producto",
+        joinColumns = @JoinColumn(name = "panaderia_id"),
+        inverseJoinColumns = @JoinColumn(name = "producto_id")
+    )
+    private Set<Producto> productos = new HashSet<>();
+
+    public Panaderia(){
+
+    }
+
+    public Panaderia(Long id, String nombre, String direccion, String telefono, Set<Cliente> clientes,
+            Set<Producto> productos) {
+        this.id = id;
+        this.nombre = nombre;
+        this.direccion = direccion;
+        this.telefono = telefono;
+        this.clientes = clientes;
+        this.productos = productos;
+    }
+
+    public void addProductos(Producto producto){
+        if(!this.productos.contains(producto)){
+            productos.add(producto);
+
+            if(!producto.getPanaderias().contains(this)){
+                producto.getPanaderias().add(this);
+            }
+        }
+    }
+
+    public void addClientes(Cliente cliente){
+        if(!this.clientes.contains(cliente)){
+            clientes.add(cliente);
+
+            if(!cliente.getPanaderias().contains(this)){
+                cliente.getPanaderias().add(this);
+            }
+        }
+    }
+    
 }
+
+
