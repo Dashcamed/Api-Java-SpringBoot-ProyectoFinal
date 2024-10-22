@@ -2,32 +2,36 @@ package SegundaEntrega.api.DTO;
 
 import java.util.Set;
 
-import SegundaEntrega.api.model.ClientePanaderia;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
 public class ClienteDTO {
-
+    @Schema(description = "Unique identifier of the user", example = "1")
+    private Long id;
+    @Schema(description = "Name of the user", example = "John Doe")
     private String name;
+    @Schema(description = "Email address of the user", example = "john.doe@example.com")
     private String email;
+    @Schema(description = "Phone number of the user", example = "1234567890")
     private String phone;
-    private Long panaderiaId;
-    private Set<ClientePanaderia> clientePanaderias;
+
+    @Schema(description = "List of panaderias with the user")
+    private Set<Long> panaderiasIds;
+
 
     public ClienteDTO() {
     }
 
-    public ClienteDTO(String name, String email, String phone, Long panaderiaId, Set<ClientePanaderia> clientePanaderias) {
+    public ClienteDTO(Long id, String name, String email, String phone, Set<Long> panaderiasIds) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
-        this.panaderiaId = panaderiaId;
-        this.clientePanaderias = clientePanaderias;
+        this.panaderiasIds = panaderiasIds;
     }
+    // Constructors, getters, and setters
 
-    public void addPanaderia(PanaderiaDTO panaderiaDTO) {
-        throw new UnsupportedOperationException("Unimplemented method 'addPanaderia'");
-    }
 }

@@ -31,4 +31,3 @@ public class PanaderiaMapper {
         return panaderia;
     }
 }
-

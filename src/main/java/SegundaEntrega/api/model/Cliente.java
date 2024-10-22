@@ -2,43 +2,52 @@ package SegundaEntrega.api.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import SegundaEntrega.api.services.FechaService;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Data
-@NoArgsConstructor
+@Builder
 public class Cliente {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
     private String phone;
-    private String fechaDeCreacion = FechaService.getFechaActual();
-    
-    @Column(nullable = true)  // Permitir que sea opcional
-    private String fechaDeModificacion;
 
-    @Column(nullable = true)  // Si no es obligatorio, puede ser null
-    private Integer edad; // Se cambia a Integer para poder manejar null
+    @ManyToMany
+    @JoinTable(
+        name = "cliente_panaderia",
+        joinColumns = @JoinColumn(name = "cliente_id"),
+        inverseJoinColumns = @JoinColumn(name = "panaderia_id")
+    )
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ClientePanaderia> clientePanaderias = new HashSet<>();
+    private Set<Panaderia> panaderias = new HashSet<>();
 
-    public void addPanaderia(Panaderia panaderia) {
-        ClientePanaderia clientePanaderia = new ClientePanaderia(this, panaderia);
-        this.clientePanaderias.add(clientePanaderia);
+    public Cliente(){
+
     }
 
-    public void setClientePanaderias(Set<ClientePanaderia> clientePanaderias) {
-        this.clientePanaderias = clientePanaderias;
+    public Cliente(Long id, String name, String email, String phone, Set<Panaderia> panaderias) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.panaderias = panaderias;
     }
 
-    public Object getPanaderia() {
-        throw new UnsupportedOperationException("Unimplemented method 'getPanaderia'");
+    public void addPanaderias(Panaderia panaderia) {
+        if (!this.panaderias.contains(panaderia)) {
+            panaderias.add(panaderia);
+            // Evitar agregar el usuario de vuelta al panaderia para prevenir recursión o
+            // ciclos
+            if (!panaderia.getClientes().contains(this)) {
+                panaderia.getClientes().add(this);
+            }
+        }
     }
 }
+

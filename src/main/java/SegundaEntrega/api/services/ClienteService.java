@@ -14,7 +14,4 @@ public interface ClienteService {
     void saveClientFromApi(ClienteDTO clienteDTO);
 
     void deleteClient(Long id);
-
-
-    ClienteDTO upClienteDTO(Long id, ClienteDTO clienteDTO);
 }

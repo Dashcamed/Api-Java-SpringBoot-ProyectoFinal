@@ -1,9 +1,8 @@
 package SegundaEntrega.api.mapper;
-
 import org.springframework.stereotype.Component;
-
 import SegundaEntrega.api.DTO.ClienteDTO;
 import SegundaEntrega.api.model.Cliente;
+
 
 @Component
 public class ClienteMapper {
@@ -17,8 +16,6 @@ public class ClienteMapper {
                 .name(cliente.getName())
                 .email(cliente.getEmail())
                 .phone(cliente.getPhone())
-                .panaderiaId(cliente.getClientePanaderias().stream().findFirst().map(cp -> cp.getPanaderia().getId()).orElse(null))
-                .clientePanaderias(cliente.getClientePanaderias())
                 .build();
     }
 
@@ -31,7 +28,6 @@ public class ClienteMapper {
         cliente.setName(clienteDTO.getName());
         cliente.setEmail(clienteDTO.getEmail());
         cliente.setPhone(clienteDTO.getPhone());
-        cliente.setClientePanaderias(clienteDTO.getClientePanaderias());
         return cliente;
     }
 }

@@ -1,5 +1,7 @@
 package SegundaEntrega.api.DTO;
 
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,22 +12,19 @@ public class ProductoDTO {
     private Double precio;
     private int stock;
     private String categoria;
-    private Long panaderiaId;
+    private Set<Long> panaderiasIds;
 
-    public ProductoDTO(){
+    ProductoDTO(){
 
     }
 
-    public ProductoDTO(String nombre, Double precio, int stock, String categoria, Long panaderiaId) {
+    public ProductoDTO(String nombre, Double precio, int stock, String categoria, Set<Long> panaderiasIds) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
         this.categoria = categoria;
-        this.panaderiaId = panaderiaId;
+        this.panaderiasIds = panaderiasIds;
     }
 
-    public void setPanaderiaId(PanaderiaDTO panaderiaDTO) {
-        throw new UnsupportedOperationException("Unimplemented method 'setPanaderiaId'");
-    }
 
 }

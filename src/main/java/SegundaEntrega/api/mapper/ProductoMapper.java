@@ -1,7 +1,5 @@
 package SegundaEntrega.api.mapper;
-
 import org.springframework.stereotype.Component;
-
 import SegundaEntrega.api.DTO.ProductoDTO;
 import SegundaEntrega.api.model.Producto;
 
@@ -18,7 +16,6 @@ public class ProductoMapper {
                 .precio(producto.getPrecio())
                 .stock(producto.getStock())
                 .categoria(producto.getCategoria())
-                .panaderiaId(producto.getPanaderia() != null ? producto.getPanaderia().getId() : null)
                 .build();
     }
 
@@ -32,7 +29,6 @@ public class ProductoMapper {
         producto.setPrecio(productoDTO.getPrecio());
         producto.setStock(productoDTO.getStock());
         producto.setCategoria(productoDTO.getCategoria());
-        producto.setPanaderiaId(productoDTO.getPanaderiaId());
         return producto;
     }
 }

@@ -11,15 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.DTO.ProductoDTO;
-import SegundaEntrega.api.services.PanaderiaService;
 import SegundaEntrega.api.services.ProductoService;
 import utils.ApiResponse;
 
@@ -53,32 +50,6 @@ public class ProductoController {
     public ResponseEntity<ProductoDTO> createProduct(@RequestBody ProductoDTO productoDTO){
         ProductoDTO createdProduct = productoService.saveProducto(productoDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
-    }
-
-    @Autowired
-    private PanaderiaService panaderiaService;
-    @PutMapping("/{id}")
-    public ResponseEntity<ProductoDTO> updateProducto(@PathVariable Long id, @RequestBody ProductoDTO productoDTO) {
-        Optional<ProductoDTO> existingProductoOpt = Optional.empty();
-        if (existingProductoOpt.isPresent()) {
-            ProductoDTO existingProducto = existingProductoOpt.get();
-
-            existingProducto.setNombre(productoDTO.getNombre());
-            existingProducto.setPrecio(productoDTO.getPrecio());
-            existingProducto.setStock(productoDTO.getStock());
-            existingProducto.setCategoria(productoDTO.getCategoria());
-
-            Optional<PanaderiaDTO> panaderiaOpt = panaderiaService.getPanaderiaById(productoDTO.getPanaderiaId());
-            if (panaderiaOpt.isPresent()) {
-                existingProducto.setPanaderiaId(panaderiaOpt.get());
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-            ProductoDTO updatedProducto = productoService.saveProducto(existingProducto);
-            return ResponseEntity.ok(updatedProducto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
     }
 
     @DeleteMapping("/{id}")
