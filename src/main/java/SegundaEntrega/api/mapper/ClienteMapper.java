@@ -13,6 +13,7 @@ public class ClienteMapper {
         }
 
         return ClienteDTO.builder()
+                .id(cliente.getId())
                 .name(cliente.getName())
                 .email(cliente.getEmail())
                 .phone(cliente.getPhone())
@@ -25,6 +26,7 @@ public class ClienteMapper {
         }
 
         Cliente cliente = new Cliente();
+        cliente.setId(clienteDTO.getId());
         cliente.setName(clienteDTO.getName());
         cliente.setEmail(clienteDTO.getEmail());
         cliente.setPhone(clienteDTO.getPhone());

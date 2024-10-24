@@ -47,8 +47,12 @@ public class PanaderiaController {
 
     @PostMapping("/createPanaderia")
     public ResponseEntity<PanaderiaDTO> createPanaderia(@RequestBody PanaderiaDTO panaderiaDTO){
-        PanaderiaDTO createdPanaderia = panaderiaService.savePanaderia(panaderiaDTO);
-        return new ResponseEntity<>(createdPanaderia, HttpStatus.CREATED);
+        try {
+            PanaderiaDTO createdPanaderia = panaderiaService.savePanaderia(panaderiaDTO);
+            return new ResponseEntity<>(createdPanaderia, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/delete/{id}")
@@ -63,7 +67,11 @@ public class PanaderiaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updatePanaderia(@PathVariable Long id, @RequestBody PanaderiaDTO panaderiaDTO) {
-        panaderiaService.updatePanaderia(id, panaderiaDTO);
-        return ResponseEntity.noContent().build();
+        try {
+            panaderiaService.updatePanaderia(id, panaderiaDTO);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 }

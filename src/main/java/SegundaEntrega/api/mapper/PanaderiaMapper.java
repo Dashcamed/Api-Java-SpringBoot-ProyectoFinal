@@ -13,6 +13,7 @@ public class PanaderiaMapper {
         }
 
         return PanaderiaDTO.builder()
+                .id(panaderia.getId())
                 .nombre(panaderia.getNombre())
                 .direccion(panaderia.getDireccion())
                 .telefono(panaderia.getTelefono())
@@ -25,6 +26,7 @@ public class PanaderiaMapper {
         }
 
         Panaderia panaderia = new Panaderia();
+        panaderia.setId(panaderiaDTO.getId());
         panaderia.setNombre(panaderiaDTO.getNombre());
         panaderia.setDireccion(panaderiaDTO.getDireccion());
         panaderia.setTelefono(panaderiaDTO.getTelefono());

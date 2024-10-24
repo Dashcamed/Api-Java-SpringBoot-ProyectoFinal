@@ -3,6 +3,8 @@ package SegundaEntrega.api.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,13 +12,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import lombok.Builder;
 import lombok.Data;
 
 
 @Entity
 @Data
-@Builder
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +27,8 @@ public class Producto {
     private int stock;
     private String categoria;
 
-    @ManyToMany(mappedBy = "productos", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Panaderia> panaderias = new HashSet<>();
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<Panaderia> panaderias;
 
     public Producto(){
 
@@ -43,15 +43,12 @@ public class Producto {
         this.panaderias = panaderias;
     }
 
-    public void addPanaderias(Panaderia panaderia) {
-        if (!this.panaderias.contains(panaderia)) {
-            panaderias.add(panaderia);
-            // Evitar agregar el usuario de vuelta al panaderia para prevenir recursión o
-            // ciclos
-            if (!panaderia.getProductos().contains(this)) {
-                panaderia.getProductos().add(this);
-            }
-        }
+    public Set<Panaderia> getPanaderias() {
+        return panaderias;
+    }
+
+    public void setPanaderias(Set<Panaderia> panaderias) {
+        this.panaderias = panaderias;
     }
 
 }

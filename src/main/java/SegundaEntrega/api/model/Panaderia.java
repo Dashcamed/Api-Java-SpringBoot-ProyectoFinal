@@ -2,14 +2,11 @@ package SegundaEntrega.api.model;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.Builder;
 import lombok.Data;
@@ -21,20 +18,14 @@ public class Panaderia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
     private String direccion;
     private String telefono;
 
-    @ManyToMany(mappedBy = "panaderias")
+    @ManyToMany(mappedBy = "panaderias", fetch = FetchType.LAZY)
     private Set<Cliente> clientes = new HashSet<>();
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "panaderia_producto",
-        joinColumns = @JoinColumn(name = "panaderia_id"),
-        inverseJoinColumns = @JoinColumn(name = "producto_id")
-    )
+    @ManyToMany(mappedBy = "panaderias", fetch = FetchType.LAZY)
     private Set<Producto> productos = new HashSet<>();
 
     public Panaderia(){

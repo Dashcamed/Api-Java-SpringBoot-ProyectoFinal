@@ -12,19 +12,25 @@ public class ProductoDTO {
     private Double precio;
     private int stock;
     private String categoria;
-    private Set<Long> panaderiasIds;
+    private Set<Long> panaderiaIds;
 
     ProductoDTO(){
 
     }
 
-    public ProductoDTO(String nombre, Double precio, int stock, String categoria, Set<Long> panaderiasIds) {
+    public ProductoDTO(String nombre, Double precio, int stock, String categoria, Set<Long> panaderiaIds) {
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;
         this.categoria = categoria;
-        this.panaderiasIds = panaderiasIds;
+        this.panaderiaIds = panaderiaIds;
     }
 
+    public Set<Long> getPanaderiaIds() {
+        return panaderiaIds;
+    }
 
+    public void setPanaderiaIds(Set<Long> panaderiaIds) {
+        this.panaderiaIds = panaderiaIds;
+    }
 }

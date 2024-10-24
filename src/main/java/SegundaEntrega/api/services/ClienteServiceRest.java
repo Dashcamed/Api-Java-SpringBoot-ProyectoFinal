@@ -33,13 +33,11 @@ public class ClienteServiceRest {
         this.clienteMapper = clienteMapper;
     }
 
-    // Obtener todos los clientes desde la base de datos y/o API externa
     public List<ClienteDTO> getAllClients() {
         List<ClienteDTO> clientesDB = clienteRepository.findAll().stream()
                 .map(clienteMapper::toDTOCliente)
                 .collect(Collectors.toList());
 
-        // Obtener clientes desde una API externa utilizando RestTemplate
         Cliente[] clientesAPI = restTemplate.getForObject(BASE_URL, Cliente[].class);
 
         if (clientesAPI != null) {
@@ -51,7 +49,6 @@ public class ClienteServiceRest {
         return clientesDB;
     }
 
-    // Obtener cliente por ID, buscando primero en la base de datos y luego en la API externa
     public ClienteDTO getClientById(Long id) {
         Optional<Cliente> optionalClient = clienteRepository.findById(id);
 
@@ -99,8 +96,8 @@ public class ClienteServiceRest {
         }
     }
 
-    public Set<PanaderiaDTO> getPanaderiasByUserId(Long userId) {
-        Cliente cliente = clienteRepository.findById(userId)
+    public Set<PanaderiaDTO> getPanaderiasByUserId(Long Id) {
+        Cliente cliente = clienteRepository.findById(Id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
         return cliente.getPanaderias()
