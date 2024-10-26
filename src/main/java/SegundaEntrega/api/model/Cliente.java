@@ -1,5 +1,6 @@
 package SegundaEntrega.api.model;
 
+import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class Cliente {
         joinColumns = @JoinColumn(name = "cliente_id"),
         inverseJoinColumns = @JoinColumn(name = "panaderia_id")
     )
-    private Set<Panaderia> panaderias;
+    private Set<Panaderia> panaderias = new HashSet<>();
 
     public Cliente(){
 

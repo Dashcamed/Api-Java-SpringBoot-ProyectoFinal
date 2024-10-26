@@ -78,8 +78,13 @@ public class ProductoService {
         return productoRepository.findById(productoId)
             .map(producto -> {
                 int stockActual = producto.getStock();
-                producto.setStock(stockActual + nuevoStock);
-                return productoMapper.toDTOProducto(productoRepository.save(producto));
+                int stockFinal = stockActual + nuevoStock;
+                if (stockFinal < 0) {
+                    throw new IllegalArgumentException("El stock no puede ser negativo.");
+                }
+
+            producto.setStock(stockFinal);
+            return productoMapper.toDTOProducto(productoRepository.save(producto));
             })
             .orElseThrow(() -> new RuntimeException("Producto no encontrado con id: " + productoId));
     }

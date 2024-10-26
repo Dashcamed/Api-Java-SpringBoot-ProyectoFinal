@@ -63,12 +63,16 @@ public class ProductoController {
     }
 
     @PatchMapping("/{id}/stock")
-    public ResponseEntity<Void> updateStock(@PathVariable Long id, @RequestParam int nuevoStock) {
+    public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam int nuevoStock) {
         try {
             productoService.updateStockProducto(id, nuevoStock);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok().body(new ApiResponseMsg("Stock Actualizado", id));
+        } catch (IllegalArgumentException e) {
+            // Mensaje específico para errores de stock negativo
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            // Error genérico en caso de que el producto no sea encontrado
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado con id: " + id);
         }
     }
 }

@@ -1,7 +1,7 @@
 package SegundaEntrega.api.model;
 
-import java.util.Set;
-import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,17 +23,17 @@ public class Panaderia {
     private String telefono;
 
     @ManyToMany(mappedBy = "panaderias", fetch = FetchType.LAZY)
-    private Set<Cliente> clientes = new HashSet<>();
+    private List<Cliente> clientes = new ArrayList<>();
 
     @ManyToMany(mappedBy = "panaderias", fetch = FetchType.LAZY)
-    private Set<Producto> productos = new HashSet<>();
+    private List<Producto> productos = new ArrayList<>();
 
     public Panaderia(){
 
     }
 
-    public Panaderia(Long id, String nombre, String direccion, String telefono, Set<Cliente> clientes,
-            Set<Producto> productos) {
+    public Panaderia(Long id, String nombre, String direccion, String telefono, List<Cliente> clientes,
+            List<Producto> productos) {
         this.id = id;
         this.nombre = nombre;
         this.direccion = direccion;
