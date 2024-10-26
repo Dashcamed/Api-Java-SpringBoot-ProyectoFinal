@@ -1,6 +1,5 @@
 package SegundaEntrega.api.model;
 
-import java.util.HashSet;
 import java.util.Set;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -17,14 +16,13 @@ public class Cliente {
     private String email;
     private String phone;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "cliente_panaderia",
         joinColumns = @JoinColumn(name = "cliente_id"),
         inverseJoinColumns = @JoinColumn(name = "panaderia_id")
     )
-
-    private Set<Panaderia> panaderias = new HashSet<>();
+    private Set<Panaderia> panaderias;
 
     public Cliente(){
 
@@ -38,15 +36,12 @@ public class Cliente {
         this.panaderias = panaderias;
     }
 
-    public void addPanaderias(Panaderia panaderia) {
-        if (!this.panaderias.contains(panaderia)) {
-            panaderias.add(panaderia);
-            // Evitar agregar el usuario de vuelta al panaderia para prevenir recursión o
-            // ciclos
-            if (!panaderia.getClientes().contains(this)) {
-                panaderia.getClientes().add(this);
-            }
-        }
+    public Set<Panaderia> getPanaderias() {
+        return panaderias;
+    }
+
+    public void setPanaderias(Set<Panaderia> panaderias) {
+        this.panaderias = panaderias;
     }
 }
 

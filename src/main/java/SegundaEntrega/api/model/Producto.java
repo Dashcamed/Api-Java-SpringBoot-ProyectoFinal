@@ -1,33 +1,30 @@
 package SegundaEntrega.api.model;
 
-import java.util.HashSet;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.persistence.ManyToMany;
+import lombok.Builder;
 import lombok.Data;
 
 
 @Entity
 @Data
+@Builder
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String nombre;
     private Double precio;
     private int stock;
     private String categoria;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+    name = "producto_panaderia",
+    joinColumns = @JoinColumn(name = "producto_id"),
+    inverseJoinColumns = @JoinColumn(name = "panaderia_id")
+)
     private Set<Panaderia> panaderias;
 
     public Producto(){
@@ -50,5 +47,7 @@ public class Producto {
     public void setPanaderias(Set<Panaderia> panaderias) {
         this.panaderias = panaderias;
     }
+
+    
 
 }

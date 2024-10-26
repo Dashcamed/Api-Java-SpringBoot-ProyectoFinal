@@ -1,7 +1,12 @@
 package SegundaEntrega.api.mapper;
+
 import org.springframework.stereotype.Component;
 import SegundaEntrega.api.DTO.ClienteDTO;
 import SegundaEntrega.api.model.Cliente;
+import SegundaEntrega.api.model.Panaderia;
+import java.util.stream.Collectors;
+
+import java.util.Set;
 
 
 @Component
@@ -12,11 +17,16 @@ public class ClienteMapper {
             throw new IllegalArgumentException("La entidad no puede ser nula");
         }
 
+        Set<Long> panaderiaIds = cliente.getPanaderias().stream()
+                .map(Panaderia::getId)
+                .collect(Collectors.toSet());
+
         return ClienteDTO.builder()
                 .id(cliente.getId())
                 .name(cliente.getName())
                 .email(cliente.getEmail())
                 .phone(cliente.getPhone())
+                .panaderiaIds(panaderiaIds)
                 .build();
     }
 

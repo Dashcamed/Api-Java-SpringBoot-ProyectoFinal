@@ -2,16 +2,17 @@ package SegundaEntrega.api.services;
 
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import SegundaEntrega.api.DTO.ClienteDTO;
-import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.mapper.ClienteMapper;
-import SegundaEntrega.api.mapper.ClienteMapperBuilder;
 import SegundaEntrega.api.model.Cliente;
+import SegundaEntrega.api.model.Panaderia;
 import SegundaEntrega.api.repository.ClienteRepository;
 import SegundaEntrega.api.repository.PanaderiaRepository;
 import jakarta.transaction.Transactional;
@@ -32,6 +33,9 @@ public class ClienteServiceRest {
         this.clienteRepository = clienteRepository;
         this.clienteMapper = clienteMapper;
     }
+
+    @Autowired
+    private PanaderiaRepository panaderiaRepository;
 
     public List<ClienteDTO> getAllClients() {
         List<ClienteDTO> clientesDB = clienteRepository.findAll().stream()
@@ -77,10 +81,30 @@ public class ClienteServiceRest {
             throw new RuntimeException("Cliente no encontrado en la API con ID: " + id);
         }
     }
-    @Transactional
-    public ClienteDTO saveClientFromDTO(ClienteDTO clienteDTO) {
+    public ClienteDTO saveClienteDTO(ClienteDTO clienteDTO) {
+        // Crear un nuevo cliente a partir del DTO
         Cliente cliente = clienteMapper.toEntity(clienteDTO);
+
+        // Si el DTO contiene IDs de panaderías, busca las panaderías correspondientes
+        if (clienteDTO.getPanaderiaIds() != null && !clienteDTO.getPanaderiaIds().isEmpty()) {
+            Set<Panaderia> panaderias = new HashSet<>();
+
+            for (Long panaderiaId : clienteDTO.getPanaderiaIds()) {
+                // Busca cada panadería por su ID
+                Optional<Panaderia> optionalPanaderia = panaderiaRepository.findById(panaderiaId);
+
+                // Si la panadería existe, la añade al conjunto
+                optionalPanaderia.ifPresent(panaderias::add);
+            }
+
+            // Asigna las panaderías encontradas al producto
+            cliente.setPanaderias(panaderias);
+        }
+
+        // Guarda el producto en la base de datos
         Cliente savedCliente = clienteRepository.save(cliente);
+
+        // Retorna el DTO del producto guardado
         return clienteMapper.toDTOCliente(savedCliente);
     }
 
@@ -94,16 +118,6 @@ public class ClienteServiceRest {
         } else {
             throw new RuntimeException("Cliente no encontrado con ID: " + id);
         }
-    }
-
-    public Set<PanaderiaDTO> getPanaderiasByUserId(Long Id) {
-        Cliente cliente = clienteRepository.findById(Id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        return cliente.getPanaderias()
-                      .stream()
-                      .map(ClienteMapperBuilder::toPanaderiaDTO)
-                      .collect(Collectors.toSet());
     }
 
 }

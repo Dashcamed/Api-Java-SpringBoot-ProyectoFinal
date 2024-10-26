@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import SegundaEntrega.api.DTO.PanaderiaCreateDTO;
 import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.mapper.PanaderiaMapper;
 import SegundaEntrega.api.model.Panaderia;
@@ -16,46 +17,48 @@ import SegundaEntrega.api.repository.PanaderiaRepository;
 public class PanaderiaService {
     @Autowired
     private final PanaderiaRepository panaderiaRepository;
-    @Autowired final PanaderiaMapper panaderiaMapper;
+    @Autowired
+    private final PanaderiaMapper panaderiaMapper;
 
-    public PanaderiaService(PanaderiaMapper panaderiaMapper, PanaderiaRepository panaderiaRepository){
+    public PanaderiaService(PanaderiaMapper panaderiaMapper, PanaderiaRepository panaderiaRepository) {
         this.panaderiaMapper = panaderiaMapper;
         this.panaderiaRepository = panaderiaRepository;
     }
 
-    public List<PanaderiaDTO> getAllPanaderias(){
+    public List<PanaderiaDTO> getAllPanaderias(boolean includeRelations) {
+        
         return panaderiaRepository.findAll().stream()
-                .map(panaderiaMapper::toDTOPanaderia)
+                .map(panaderia -> panaderiaMapper.toDTOPanaderia(panaderia, includeRelations))
                 .collect(Collectors.toList());
     }
 
-    public Optional<PanaderiaDTO> getPanaderiaById(Long id){
-        return panaderiaRepository.findById(id).map(panaderiaMapper::toDTOPanaderia);
+    public Optional<PanaderiaDTO> getPanaderiaById(Long id, boolean includeRelations) {
+        return panaderiaRepository.findById(id)
+                .map(panaderia -> panaderiaMapper.toDTOPanaderia(panaderia, includeRelations));
     }
 
-    public PanaderiaDTO savePanaderia(PanaderiaDTO panaderiaDTO){
-        Panaderia panaderia = panaderiaMapper.toEntity(panaderiaDTO);
-        Panaderia savedPanaderia = panaderiaRepository.save(panaderia);
-        return panaderiaMapper.toDTOPanaderia(savedPanaderia);
-    }
+    public PanaderiaDTO savePanaderia(PanaderiaCreateDTO panaderiaCreateDTO) {
+    Panaderia panaderia = panaderiaMapper.toEntity(panaderiaCreateDTO);
+    Panaderia savedPanaderia = panaderiaRepository.save(panaderia);
+    return panaderiaMapper.toDTOPanaderia(savedPanaderia, false);
+}
 
-    public void deletePanaderia(Long id){
-        if (panaderiaRepository.existsById(id)){
+public PanaderiaDTO updatePanaderia(Long id, PanaderiaCreateDTO panaderiaCreateDTO) {
+    return panaderiaRepository.findById(id)
+        .map(panaderia -> {
+            panaderia.setNombre(panaderiaCreateDTO.getNombre());
+            panaderia.setDireccion(panaderiaCreateDTO.getDireccion());
+            panaderia.setTelefono(panaderiaCreateDTO.getTelefono());
+            return panaderiaMapper.toDTOPanaderia(panaderiaRepository.save(panaderia), false);
+        })
+        .orElse(null);
+}
+
+    public void deletePanaderia(Long id) {
+        if (panaderiaRepository.existsById(id)) {
             panaderiaRepository.deleteById(id);
         } else {
-            System.out.println("La panaderia no existe");
+            System.out.println("La panadería no existe");
         }
-    }
-
-    public PanaderiaDTO updatePanaderia(Long id, PanaderiaDTO panaderiaDTO) {
-        return panaderiaRepository.findById(id)
-            .map(panaderia -> {
-                panaderia.setNombre(panaderiaDTO.getNombre());
-                panaderia.setDireccion(panaderiaDTO.getDireccion());
-                panaderia.setTelefono(panaderiaDTO.getTelefono());
-                return panaderiaMapper.toDTOPanaderia(panaderiaRepository.save(panaderia));
-            })
-            .orElse(null);
-
     }
 }

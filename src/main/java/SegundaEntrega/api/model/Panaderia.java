@@ -1,7 +1,7 @@
 package SegundaEntrega.api.model;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,26 +42,6 @@ public class Panaderia {
         this.productos = productos;
     }
 
-    public void addProductos(Producto producto){
-        if(!this.productos.contains(producto)){
-            productos.add(producto);
-
-            if(!producto.getPanaderias().contains(this)){
-                producto.getPanaderias().add(this);
-            }
-        }
-    }
-
-    public void addClientes(Cliente cliente){
-        if(!this.clientes.contains(cliente)){
-            clientes.add(cliente);
-
-            if(!cliente.getPanaderias().contains(this)){
-                cliente.getPanaderias().add(this);
-            }
-        }
-    }
-    
 }
 
 

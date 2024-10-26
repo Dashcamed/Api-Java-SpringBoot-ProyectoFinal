@@ -44,8 +44,8 @@ public class ClienteController {
     // Crear un nuevo cliente a partir de un DTO
     @PostMapping("/createClient")
     public ResponseEntity<?> addClient(@RequestBody ClienteDTO clienteDTO) {
-        clienteService.saveClientFromDTO(clienteDTO);
-        return ResponseEntity.ok().body(new ApiResponse("Cliente Creado", clienteDTO));
+        ClienteDTO createdProduct = clienteService.saveClienteDTO(clienteDTO);
+        return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
     // Obtener todos los clientes
