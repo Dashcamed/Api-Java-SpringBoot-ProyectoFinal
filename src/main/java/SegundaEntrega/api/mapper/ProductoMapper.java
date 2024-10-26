@@ -15,10 +15,11 @@ public class ProductoMapper {
         }
 
         Set<Long> panaderiaIds = producto.getPanaderias().stream()
-                .map(Panaderia::getId)  // Obtener solo los IDs de las panaderías
+                .map(Panaderia::getId)
                 .collect(Collectors.toSet());
 
         return ProductoDTO.builder()
+                .id(producto.getId())
                 .nombre(producto.getNombre())
                 .precio(producto.getPrecio())
                 .stock(producto.getStock())
@@ -33,6 +34,7 @@ public class ProductoMapper {
         }
 
         Producto producto = new Producto();
+        producto.setId(productoDTO.getId());
         producto.setNombre(productoDTO.getNombre());
         producto.setPrecio(productoDTO.getPrecio());
         producto.setStock(productoDTO.getStock());

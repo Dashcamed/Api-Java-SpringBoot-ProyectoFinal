@@ -18,7 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import SegundaEntrega.api.DTO.PanaderiaCreateDTO;
 import SegundaEntrega.api.DTO.PanaderiaDTO;
 import SegundaEntrega.api.services.PanaderiaService;
-import utils.ApiResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import utils.ApiResponseMsg;
 
 @RestController
 @RequestMapping("/api/panaderias")
@@ -31,9 +36,16 @@ public class PanaderiaController {
     }
 
     @GetMapping("/all")
-public ResponseEntity<List<PanaderiaDTO>> getAllPanaderias(@RequestParam(value = "includeRelations", defaultValue = "false") boolean includeRelations) {
-    return ResponseEntity.ok(panaderiaService.getAllPanaderias(true)); // Aquí puedes forzar includeRelations a true para la prueba
-}
+    @Operation(summary = "Obtener todas las panaderias", description = "Retorna todas las panaderias")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = PanaderiaDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Bakeries not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                    @ExampleObject(name = "PanaderiaNotFound", value = "{\"message\": \"Bakery not found\"}", description = "Panaderias no encontradas")
+            }))
+    })
+    public ResponseEntity<List<PanaderiaDTO>> getAllPanaderias(@RequestParam(value = "includeRelations", defaultValue = "false") boolean includeRelations) {
+        return ResponseEntity.ok(panaderiaService.getAllPanaderias(true)); // Aquí puedes forzar includeRelations a true para la prueba
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getPanaderiaById(@PathVariable("id") Long id){
@@ -41,7 +53,7 @@ public ResponseEntity<List<PanaderiaDTO>> getAllPanaderias(@RequestParam(value =
             Optional<PanaderiaDTO> panaderia = panaderiaService.getPanaderiaById(id, false);
             return ResponseEntity.ok(panaderia);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("usuario no encontrado", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("usuario no encontrado", e.getMessage()));
         }
     }
 
@@ -55,9 +67,9 @@ public ResponseEntity<List<PanaderiaDTO>> getAllPanaderias(@RequestParam(value =
     public ResponseEntity<?> deleteClient(@PathVariable("id") Long id) {
         try {
             panaderiaService.deletePanaderia(id);
-            return ResponseEntity.ok().body(new ApiResponse("Panadería eliminada", id));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Panadería eliminada", id));
             } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar la panadería", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("Error: No se pudo eliminar la panadería", e.getMessage()));
         }
     }
 

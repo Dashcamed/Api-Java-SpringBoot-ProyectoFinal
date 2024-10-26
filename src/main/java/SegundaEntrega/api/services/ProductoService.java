@@ -31,39 +31,37 @@ public class ProductoService {
     }
 
     public List<ProductoDTO> getAllProductos(){
-        return productoRepository.findAll().stream()
+        if (productoRepository.findAll().isEmpty()) {
+            throw new RuntimeException("No se encontraron productos");
+        }
+
+        return productoRepository.findAll()
+                .stream()
                 .map(productoMapper::toDTOProducto)
                 .collect(Collectors.toList());
     }
 
     public Optional<ProductoDTO> getProductoById(Long id){
+        if (productoRepository.findById(id).isEmpty()) {
+            throw new RuntimeException("No se encontraron productos");
+        }
         return productoRepository.findById(id).map(productoMapper::toDTOProducto);
     }
 
     public ProductoDTO saveProducto(ProductoDTO productoDTO) {
-        // Crear un nuevo producto a partir del DTO
+
         Producto producto = productoMapper.toEntity(productoDTO);
 
-        // Si el DTO contiene IDs de panaderías, busca las panaderías correspondientes
         if (productoDTO.getPanaderiaIds() != null && !productoDTO.getPanaderiaIds().isEmpty()) {
             Set<Panaderia> panaderias = new HashSet<>();
-        
+
             for (Long panaderiaId : productoDTO.getPanaderiaIds()) {
-                // Busca cada panadería por su ID
                 Optional<Panaderia> optionalPanaderia = panaderiaRepository.findById(panaderiaId);
-                
-                // Si la panadería existe, la añade al conjunto
                 optionalPanaderia.ifPresent(panaderias::add);
             }
-        
-            // Asigna las panaderías encontradas al producto
             producto.setPanaderias(panaderias);
         }
-
-        // Guarda el producto en la base de datos
         Producto savedProducto = productoRepository.save(producto);
-
-        // Retorna el DTO del producto guardado
         return productoMapper.toDTOProducto(savedProducto);
     }
 
@@ -72,7 +70,7 @@ public class ProductoService {
         if (productoRepository.existsById(id)) {
             productoRepository.deleteById(id);
         } else {
-            System.out.println("El producto no existe");
+            throw new RuntimeException("El producto no existe");
         }
     }
 

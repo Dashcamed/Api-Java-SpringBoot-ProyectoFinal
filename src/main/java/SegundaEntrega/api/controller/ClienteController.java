@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import SegundaEntrega.api.DTO.ClienteDTO;
 import SegundaEntrega.api.mapper.ClienteMapper;
 import SegundaEntrega.api.services.ClienteServiceRest;
-import utils.ApiResponse;
+import utils.ApiResponseMsg;
 
 import java.util.List;
 
@@ -53,9 +54,9 @@ public class ClienteController {
     public ResponseEntity<?> getAllClientes() {
         try {
             List<ClienteDTO> clientes = clienteService.getAllClients();
-            return ResponseEntity.ok().body(new ApiResponse("Lista de Clientes", clientes));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Lista de Clientes", clientes));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("NO HAY CLIENTES", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("NO HAY CLIENTES", e.getMessage()));
         }
     }
     // obtener un cliente por id
@@ -63,7 +64,7 @@ public class ClienteController {
     public ResponseEntity<?> getClientById(@PathVariable Long id){
         try {
             clienteService.getClientById(id);
-            return ResponseEntity.ok().body(new ApiResponse("Cliente:", id));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Cliente:", id));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Error usuario no encontrado" + e.getMessage());
         }
@@ -74,10 +75,16 @@ public class ClienteController {
     public ResponseEntity<?> deleteClient(@PathVariable Long id) {
         try {
             clienteService.deleteClient(id);
-            return ResponseEntity.ok().body(new ApiResponse("Cliente Eliminado", id));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Cliente Eliminado", id));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar el cliente", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("Error: No se pudo eliminar el cliente", e.getMessage()));
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
+        ClienteDTO updatedCliente = clienteService.updaClienteDTO(id, clienteDTO);
+        return ResponseEntity.ok(updatedCliente);
     }
 
 }

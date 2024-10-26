@@ -1,11 +1,11 @@
 package utils;
 
-public class ApiResponse {
+public class ApiResponseMsg {
 
     private String message;
     private Object data;
 
-    public ApiResponse(String message, Object data) {
+    public ApiResponseMsg(String message, Object data) {
         this.message = message;
         this.data = data;
     }

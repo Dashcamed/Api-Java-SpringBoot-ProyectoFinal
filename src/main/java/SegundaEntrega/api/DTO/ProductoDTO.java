@@ -9,6 +9,8 @@ import lombok.Data;
 @Data
 @Builder
 public class ProductoDTO {
+    @Schema(description = "Id of the product", example = "1")
+    private Long id;
     @Schema(description = "Name of the product", example = "Loaf")
     private String nombre;
     @Schema(description = "Price of the product", example = "3.9")
@@ -23,7 +25,8 @@ public class ProductoDTO {
 
     }
 
-    public ProductoDTO(String nombre, Double precio, int stock, String categoria, Set<Long> panaderiaIds) {
+    public ProductoDTO(Long id, String nombre, Double precio, int stock, String categoria, Set<Long> panaderiaIds) {
+        this.id = id;
         this.nombre = nombre;
         this.precio = precio;
         this.stock = stock;

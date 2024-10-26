@@ -120,4 +120,15 @@ public class ClienteServiceRest {
         }
     }
 
+    public ClienteDTO updaClienteDTO(Long id, ClienteDTO clienteDTO){
+        return clienteRepository.findById(id)
+        .map(cliente -> {
+            cliente.setName(clienteDTO.getName());
+            cliente.setEmail(clienteDTO.getEmail());
+            cliente.setPhone(clienteDTO.getPhone());
+            return clienteMapper.toDTOCliente(clienteRepository.save(cliente));
+        })
+        .orElse(null);
+    }
+
 }

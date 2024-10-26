@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import SegundaEntrega.api.DTO.ProductoDTO;
 import SegundaEntrega.api.services.ProductoService;
-import utils.ApiResponse;
+import utils.ApiResponseMsg;
 
 @RestController
 @RequestMapping("/api/productos")
@@ -30,9 +30,9 @@ public class ProductoController {
     public ResponseEntity<?> getAllProductos() {
         try {
             List<ProductoDTO> productos = productoService.getAllProductos();
-            return ResponseEntity.ok().body(new ApiResponse("Lista de productos", productos));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Lista de productos", productos));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("NO HAY PRODUCTOS", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("NO HAY PRODUCTOS", e.getMessage()));
         }
     }
 
@@ -42,7 +42,7 @@ public class ProductoController {
             Optional<ProductoDTO> producto = productoService.getProductoById(id);
             return ResponseEntity.ok(producto);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("Producto no encontrado", e.getMessage()));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("Producto no encontrado", e.getMessage()));
         }
     }
 
@@ -56,9 +56,9 @@ public class ProductoController {
     public ResponseEntity<?> deleteProducto(@PathVariable Long id) {
         try {
             productoService.deleteProducto(id);
-            return ResponseEntity.ok().body(new ApiResponse("Producto Eliminado", null));
+            return ResponseEntity.ok().body(new ApiResponseMsg("Producto Eliminado", null));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse("Error: No se pudo eliminar el Producto", null));
+            return ResponseEntity.badRequest().body(new ApiResponseMsg("Error: No se pudo eliminar el Producto", null));
         }
     }
 
