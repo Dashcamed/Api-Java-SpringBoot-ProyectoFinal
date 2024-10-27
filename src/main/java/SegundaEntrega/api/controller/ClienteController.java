@@ -15,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import SegundaEntrega.api.DTO.ClienteDTO;
 import SegundaEntrega.api.mapper.ClienteMapper;
 import SegundaEntrega.api.services.ClienteServiceRest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import utils.ApiResponseMsg;
 
 import java.util.List;
@@ -33,6 +38,7 @@ public class ClienteController {
     public ClienteMapper clienteMapper;
     // Importar cliente desde la API externa
     @PostMapping("/import/{id}")
+    @Operation(summary = "Importa los clientes al modelo con datos de una api externa", description = "Inyecta en el modelo los datos de la api y los transforma a la entidad que se asocia.")
     public ResponseEntity<ClienteDTO> importClienteFromApi(@PathVariable Long id) {
         try {
             ClienteDTO clienteDTO = clienteService.saveClientFromApi(id);
@@ -44,6 +50,7 @@ public class ClienteController {
 
     // Crear un nuevo cliente a partir de un DTO
     @PostMapping("/createClient")
+    @Operation(summary = "Crear un cliente asociado a una panaderia", description = "Retorna un estado de http si se crea.")
     public ResponseEntity<?> addClient(@RequestBody ClienteDTO clienteDTO) {
         ClienteDTO createdProduct = clienteService.saveClienteDTO(clienteDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -51,6 +58,13 @@ public class ClienteController {
 
     // Obtener todos los clientes
     @GetMapping(path = "/all")
+    @Operation(summary = "Obtener todas los clientes", description = "Retorna los clientes creados y los de la api")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
+            @ApiResponse(responseCode = "404", description = "Clients not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                    @ExampleObject(name = "ClientsNotFound", value = "{\"message\": \"Client not found\"}", description = "Clientes no encontrados")
+            }))
+    })
     public ResponseEntity<?> getAllClientes() {
         try {
             List<ClienteDTO> clientes = clienteService.getAllClients();
@@ -61,6 +75,7 @@ public class ClienteController {
     }
     // obtener un cliente por id
     @GetMapping("/{id}")
+    @Operation(summary = "Obtener un cliente por su id asociado", description = "Retorna el cliente asociado a la id proporcionada")
     public ResponseEntity<?> getClientById(@PathVariable Long id){
         try {
             clienteService.getClientById(id);
@@ -72,6 +87,7 @@ public class ClienteController {
 
     // Eliminar cliente por ID
     @DeleteMapping("/{id}")
+    @Operation(summary = "Borrar un cliente", description = "Borra un cliente asociado a la id proporcionada")
     public ResponseEntity<?> deleteClient(@PathVariable Long id) {
         try {
             clienteService.deleteClient(id);
@@ -82,9 +98,10 @@ public class ClienteController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Modificar cliente por su id", description = "Retorna el cliente con sus campos modificados")
     public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
         ClienteDTO updatedCliente = clienteService.updaClienteDTO(id, clienteDTO);
-        return ResponseEntity.ok(updatedCliente);
+        return ResponseEntity.ok().body(updatedCliente);
     }
 
 }
