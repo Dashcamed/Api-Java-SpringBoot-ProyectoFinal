@@ -49,6 +49,11 @@ public class ProductoController {
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un producto por su id", description = "Retorna el producto asociado al id proporcionado")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ProductoDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Products not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ProductNotFound", value = "{\"message\": \"Product not found\"}", description = "Producto no encontrado")
+        }))})
     public ResponseEntity<?> getProductoById(@PathVariable("id") Long id){
         try {
             Optional<ProductoDTO> producto = productoService.getProductoById(id);
@@ -60,6 +65,11 @@ public class ProductoController {
 
     @PostMapping("/createProduct")
     @Operation(summary = "Crear un producto asociado a una panaderia", description = "Retorna el producto creado")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ProductoDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Products not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ProductNotCreated", value = "{\"message\": \"Product not created\"}", description = "Productos no creado")
+        }))})
     public ResponseEntity<ProductoDTO> createProduct(@RequestBody ProductoDTO productoDTO){
         ProductoDTO createdProduct = productoService.saveProducto(productoDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
@@ -67,6 +77,11 @@ public class ProductoController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Borra un producto", description = "Retorna mensaje de producto eliminado")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ProductoDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Products not deleted", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ProductsNotDeleted", value = "{\"message\": \"Product not deleted\"}", description = "Productos no borrado")
+        }))})
     public ResponseEntity<?> deleteProducto(@PathVariable Long id) {
         try {
             productoService.deleteProducto(id);
@@ -78,6 +93,11 @@ public class ProductoController {
 
     @PatchMapping("/{id}/stock")
     @Operation(summary = "Modifica el stock de un producto asociado a un ID", description = "Exige ademas del id, el nuevo stock que hay que modificar. Tiene una validacion la cual impide que el stock quede en saldo negativo. El campo nuevo stock admite numeros negativos y positivos.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ProductoDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Stock not modified", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "StockNotModified", value = "{\"message\": \"Stock not modified\"}", description = "Stock no modificado")
+        }))})
     public ResponseEntity<?> updateStock(@PathVariable Long id, @RequestParam int nuevoStock) {
         try {
             productoService.updateStockProducto(id, nuevoStock);

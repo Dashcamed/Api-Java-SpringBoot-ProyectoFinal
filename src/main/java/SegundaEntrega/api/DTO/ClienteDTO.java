@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ClienteDTO {
-    @Schema(description = "Unique identifier of the user", example = "1")
+    @Schema(description = "Unique identifier of the user", example = "0")
     private Long id;
     @Schema(description = "Name of the user", example = "John Doe")
     private String name;

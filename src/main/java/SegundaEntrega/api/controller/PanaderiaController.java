@@ -48,7 +48,13 @@ public class PanaderiaController {
     }
 
     @GetMapping("/{id}")
-    @Operation(summary = "Obtener una panaderia por su id", description = "Retorna la panaderia y sus relaciones")
+    @Operation(summary = "Obtener una panaderia por su id", description = "Retorna la panaderia asociada al id y sus relaciones")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = PanaderiaDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Bakery not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "PanaderiaNotFound", value = "{\"message\": \"Bakery not found\"}", description = "Panaderia no encontrada")
+        }))
+    })
     public ResponseEntity<?> getPanaderiaById(@PathVariable("id") Long id){
         try {
             Optional<PanaderiaDTO> panaderia = panaderiaService.getPanaderiaById(id, false);
@@ -60,6 +66,12 @@ public class PanaderiaController {
 
     @PostMapping("/createPanaderia")
     @Operation(summary = "Crear una panaderia", description = "Retorna la panaderia creada")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = PanaderiaCreateDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Bakery not created", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "PanaderiaNotCreated", value = "{\"message\": \"Bakery not created\"}", description = "Panaderia no se pudo crear")
+        }))
+    })
     public ResponseEntity<PanaderiaDTO> createPanaderia(@RequestBody PanaderiaCreateDTO panaderiaCreateDTO) {
         PanaderiaDTO createdPanaderia = panaderiaService.savePanaderia(panaderiaCreateDTO);
         return ResponseEntity.ok(createdPanaderia);
@@ -67,6 +79,12 @@ public class PanaderiaController {
 
     @DeleteMapping("/delete/{id}")
     @Operation(summary = "Borra una panaderia por su id asociado", description = "Retorna mensaje Panaderia eliminada")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = PanaderiaDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Bakery could not be deleted", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "PanaderiaNotDeleted", value = "{\"message\": \"Bakery not deleted\"}", description = "Panaderia no borrada")
+        }))
+    })
     public ResponseEntity<?> deleteClient(@PathVariable("id") Long id) {
         try {
             panaderiaService.deletePanaderia(id);
@@ -78,6 +96,12 @@ public class PanaderiaController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Modifica los campos de una panaderia por su id", description = "Retorna la panaderia modificada.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = PanaderiaDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Bakery not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "PanaderiaNotFound", value = "{\"message\": \"Bakery not found\"}", description = "Panaderia no encontrada ni modificada")
+        }))
+    })
     public ResponseEntity<PanaderiaDTO> updatePanaderia(@PathVariable Long id, @RequestBody PanaderiaCreateDTO panaderiaCreateDTO) {
         PanaderiaDTO updatedPanaderia = panaderiaService.updatePanaderia(id, panaderiaCreateDTO);
         return ResponseEntity.ok(updatedPanaderia);

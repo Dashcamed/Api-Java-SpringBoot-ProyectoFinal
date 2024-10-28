@@ -36,7 +36,6 @@ public class ClienteController {
     }
     @Autowired
     public ClienteMapper clienteMapper;
-    // Importar cliente desde la API externa
     @PostMapping("/import/{id}")
     @Operation(summary = "Importa los clientes al modelo con datos de una api externa", description = "Inyecta en el modelo los datos de la api y los transforma a la entidad que se asocia.")
     public ResponseEntity<ClienteDTO> importClienteFromApi(@PathVariable Long id) {
@@ -48,15 +47,19 @@ public class ClienteController {
         }
     }
 
-    // Crear un nuevo cliente a partir de un DTO
     @PostMapping("/createClient")
-    @Operation(summary = "Crear un cliente asociado a una panaderia", description = "Retorna un estado de http si se crea.")
+    @Operation(summary = "Crear un cliente asociado a una panaderia", description = "Crear un cliente asociandolo al id de una panaderia que ya existe. Retorna un estado de http si se crea.")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Client not created", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ClientsNotCreated", value = "{\"message\": \"Client not created\"}", description = "Clientes no creado")
+        }))
+    })
     public ResponseEntity<?> addClient(@RequestBody ClienteDTO clienteDTO) {
         ClienteDTO createdProduct = clienteService.saveClienteDTO(clienteDTO);
         return new ResponseEntity<>(createdProduct, HttpStatus.CREATED);
     }
 
-    // Obtener todos los clientes
     @GetMapping(path = "/all")
     @Operation(summary = "Obtener todas los clientes", description = "Retorna los clientes creados y los de la api")
     @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
@@ -73,9 +76,15 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(new ApiResponseMsg("NO HAY CLIENTES", e.getMessage()));
         }
     }
-    // obtener un cliente por id
+
     @GetMapping("/{id}")
     @Operation(summary = "Obtener un cliente por su id asociado", description = "Retorna el cliente asociado a la id proporcionada")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Clients not found", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ClientsNotFound", value = "{\"message\": \"Client not found\"}", description = "Cliente no encontrados")
+        }))
+    })
     public ResponseEntity<?> getClientById(@PathVariable Long id){
         try {
             clienteService.getClientById(id);
@@ -85,9 +94,14 @@ public class ClienteController {
         }
     }
 
-    // Eliminar cliente por ID
     @DeleteMapping("/{id}")
     @Operation(summary = "Borrar un cliente", description = "Borra un cliente asociado a la id proporcionada")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Client not deleted", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ClientNotDeleted", value = "{\"message\": \"Client not deleted\"}", description = "Clientes no borrado")
+        }))
+    })
     public ResponseEntity<?> deleteClient(@PathVariable Long id) {
         try {
             clienteService.deleteClient(id);
@@ -99,6 +113,12 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Modificar cliente por su id", description = "Retorna el cliente con sus campos modificados")
+    @io.swagger.v3.oas.annotations.responses.ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Successful operation", content = @Content(schema = @Schema(implementation = ClienteDTO.class))),
+        @ApiResponse(responseCode = "404", description = "Client not modified", content = @Content(schema = @Schema(implementation = ApiResponse.class), examples = {
+                @ExampleObject(name = "ClientsNotModified", value = "{\"message\": \"Client not Modified\"}", description = "Clientes no modificado")
+        }))
+    })
     public ResponseEntity<ClienteDTO> updateCliente(@PathVariable Long id, @RequestBody ClienteDTO clienteDTO){
         ClienteDTO updatedCliente = clienteService.updaClienteDTO(id, clienteDTO);
         return ResponseEntity.ok().body(updatedCliente);

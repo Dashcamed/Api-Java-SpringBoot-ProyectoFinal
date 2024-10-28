@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 public class ProductoDTO {
-    @Schema(description = "Id of the product", example = "1")
+    @Schema(description = "Id of the product", example = "0")
     private Long id;
     @Schema(description = "Name of the product", example = "Loaf")
     private String nombre;
